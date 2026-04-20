@@ -1,0 +1,4 @@
+.section-title {
+  margin-bottom: var(--space-3);
+  font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+}

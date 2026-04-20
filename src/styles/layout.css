@@ -1,0 +1,5 @@
+#app {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-3) var(--space-6);
+}

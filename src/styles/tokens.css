@@ -1,0 +1,22 @@
+/* 与主题无关的CSS变量设置 */
+:root {
+  --font-display: "STKaiti", "KaiTi", "FangSong", "Times New Roman", serif;
+  --font-ui: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.14);
+
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  --transition-fast: 180ms ease;
+  --transition-mid: 280ms ease;
+}

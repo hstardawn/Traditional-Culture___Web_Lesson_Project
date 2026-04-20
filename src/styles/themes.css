@@ -1,0 +1,24 @@
+/* 主题相关的CSS变量声明处(一般就只是写主题色) */
+html[data-theme="qingdai"] {
+  --color-bg: #f5f1e8;
+  --color-bg-alt: #ece4d2;
+  --color-surface: #fffdf7;
+  --color-text: #22313f;
+  --color-text-muted: #536578;
+  --color-primary: #2f5d62;
+  --color-accent: #c3773a;
+  --color-border: #d8ccb5;
+  --color-success: #4f7d56;
+}
+
+html[data-theme="danzhu"] {
+  --color-bg: #f7ece7;
+  --color-bg-alt: #efd6cb;
+  --color-surface: #fffaf5;
+  --color-text: #3c2a24;
+  --color-text-muted: #705448;
+  --color-primary: #9e3d2f;
+  --color-accent: #d18b2b;
+  --color-border: #e1c1b0;
+  --color-success: #4d7a46;
+}
