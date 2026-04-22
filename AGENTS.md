@@ -63,6 +63,8 @@
 - `src/pages/home/constants/solarTerms.js`：首页节气静态数据。
 - `src/pages/home/constants/divinations.js`：首页占卜签文静态数据。
 - `src/pages/play/index.js`：示例小游戏页面级自定义元素 `tc-play-page`。
+- `src/pages/advisor/index.js`：出行问策页面级自定义元素 `tc-advisor-page`，负责对话 UI 与流式响应渲染。
+- `src/services/travelAdvisorApi.js`：出行问策 SSE 流式接口客户端。
 - `src/styles/components/top-bar.css`：顶栏组件样式。
 - `src/styles/components/theme-switcher.css`：主题切换组件样式。
 - `src/styles/components/section-title.css`：标题组件样式。
@@ -70,6 +72,12 @@
 - `src/styles/pages/home.css`：首页布局样式。
 - `src/styles/pages/home-divination.css`：首页占卜区样式。
 - `src/styles/pages/play.css`：小游戏示例页样式。
+- `src/styles/pages/advisor.css`：出行问策页面样式。
+- `server/cmd/server/main.go`：Go 服务端入口，注册静态文件服务与出行问策 API。
+- `server/internal/travelagent/types.go`：出行问策请求、上下文与流式事件结构。
+- `server/internal/travelagent/context.go`：天气、黄历和风险规则上下文构建。
+- `server/internal/travelagent/agent.go`：基于 Eino ChatModel 的出行建议流式生成。
+- `server/internal/travelagent/http.go`：出行问策 HTTP/SSE 接口。
 
 ## 8. 执行记录
 
@@ -224,3 +232,62 @@
 - 验证：已执行静态错误检查，相关 JS 文件均无报错。
 - 风险与待办：
 	- 仍建议在浏览器手动验证首页与小游戏页切换、主题切换、占卜结果展示。
+
+### 2026-04-22 / Codex
+- 目标：新增 Eino 服务端出行问策接口，并在前端增加独立对话路由与流式传输页面。
+- 修改文件：
+	- `server/go.mod`
+	- `server/go.sum`
+	- `server/cmd/server/main.go`
+	- `server/internal/travelagent/types.go`
+	- `server/internal/travelagent/context.go`
+	- `server/internal/travelagent/agent.go`
+	- `server/internal/travelagent/http.go`
+	- `src/main.js`
+	- `src/components/TopBar.js`
+	- `src/services/travelAdvisorApi.js`
+	- `src/pages/advisor/index.js`
+	- `src/styles/components/top-bar.css`
+	- `src/styles/pages/advisor.css`
+	- `index.html`
+	- `AGENTS.md`
+- 验证：已执行 `go test ./...`、前端 JS `node --check`、`/api/health` 与 `/api/travel-advisor/stream` SSE 请求；Playwright MCP 因本机 `/.playwright-mcp` 目录创建失败未能完成浏览器自动化检查。
+- 风险与待办：
+	- 未配置 `SILICONFLOW_API_KEY` 时服务端会启动失败；出行问策结果必须通过 Eino OpenAI-compatible ChatModel 调用硅基流动生成。
+	- 黄历当前为本地民俗规则上下文，后续如需精确农历黄历可替换为正式黄历数据源。
+
+### 2026-04-23 / Codex
+- 目标：调整出行问策页面文案，移除上下文展示面板，并将模型供应商配置切换为硅基流动。
+- 修改文件：
+	- `src/pages/advisor/index.js`
+	- `src/styles/pages/advisor.css`
+	- `server/cmd/server/main.go`
+	- `server/internal/travelagent/agent.go`
+	- `AGENTS.md`
+- 验证：已执行前端 JS `node --check`、`go test ./...`、本地 HTTP 首页加载与出行问策 SSE 请求，并检索确认旧 UI 文案与旧 OpenAI 环境变量名不再残留。
+- 风险与待办：
+	- 硅基流动模型与接口地址可通过 `SILICONFLOW_MODEL`、`SILICONFLOW_BASE_URL` 覆盖。
+
+### 2026-04-23 / Codex
+- 目标：移除出行问策页示例填充入口，并删除后端模拟返回逻辑，确保建议结果来自硅基流动模型。
+- 修改文件：
+	- `src/pages/advisor/index.js`
+	- `src/styles/pages/advisor.css`
+	- `server/internal/travelagent/agent.go`
+	- `AGENTS.md`
+- 验证：已执行前端 JS `node --check`、`go test ./...`、无 `SILICONFLOW_API_KEY` 启动失败检查，并检索确认示例入口与模拟返回逻辑不再残留。
+- 风险与待办：
+	- 本地运行服务端前必须配置 `SILICONFLOW_API_KEY`。
+
+### 2026-04-23 / Codex
+- 目标：将出行问策交互改为纯自然语言对话，并在模型上下文中显式注入当前时间。
+- 修改文件：
+	- `src/pages/advisor/index.js`
+	- `src/styles/pages/advisor.css`
+	- `server/internal/travelagent/types.go`
+	- `server/internal/travelagent/context.go`
+	- `server/internal/travelagent/agent.go`
+	- `AGENTS.md`
+- 验证：已执行前端 JS `node --check`、`go test ./...`；使用本地服务验证自然语言请求“我在上海，明天上午想去杭州西湖走走...”可解析为杭州与明天日期，且 SSE 上下文包含 `currentTime`、`currentDate`、`timezone`。
+- 风险与待办：
+	- 使用真实硅基流动模型返回结果仍需配置有效 `SILICONFLOW_API_KEY`。

@@ -2,7 +2,8 @@ import "./ThemeSwitcher.js";
 
 const PAGE_SWITCH_ITEMS = [
   { id: "home", label: "首页" },
-  { id: "play", label: "小游戏" }
+  { id: "play", label: "小游戏" },
+  { id: "advisor", label: "出行问策" }
 ];
 
 class TcTopBar extends HTMLElement {
@@ -20,23 +21,34 @@ class TcTopBar extends HTMLElement {
 
   render() {
     const currentPage = this.getAttribute("current-page") || "home";
-    const navLinks = PAGE_SWITCH_ITEMS
-      .map((item) => {
-        const activeClass = item.id === currentPage ? " is-active" : "";
-        return `<a class="page-switch-link${activeClass}" data-page="${item.id}" href="#/${item.id}">${item.label}</a>`;
-      })
-      .join("");
 
-    this.innerHTML = `
-      <div class="top-bar">
-        <nav class="page-switch" aria-label="页面切换">
-          ${navLinks}
-        </nav>
-        <div class="top-bar-theme">
-          <tc-theme-switcher></tc-theme-switcher>
-        </div>
-      </div>
-    `;
+    const wrapper = document.createElement("div");
+    wrapper.className = "top-bar";
+
+    const nav = document.createElement("nav");
+    nav.className = "page-switch";
+    nav.setAttribute("aria-label", "页面切换");
+
+    PAGE_SWITCH_ITEMS.forEach((item) => {
+      const link = document.createElement("a");
+      link.className = "page-switch-link";
+      link.dataset.page = item.id;
+      link.href = `#/${item.id}`;
+      link.textContent = item.label;
+
+      if (item.id === currentPage) {
+        link.classList.add("is-active");
+      }
+
+      nav.append(link);
+    });
+
+    const theme = document.createElement("div");
+    theme.className = "top-bar-theme";
+    theme.append(document.createElement("tc-theme-switcher"));
+
+    wrapper.append(nav, theme);
+    this.replaceChildren(wrapper);
   }
 }
 

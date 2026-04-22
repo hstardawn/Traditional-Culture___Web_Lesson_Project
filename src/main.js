@@ -2,10 +2,12 @@ import { initTheme } from "./components/ThemeSwitcher.js";
 import "./components/TopBar.js";
 import { homePageTag } from "./pages/home/index.js";
 import { playPageTag } from "./pages/play/index.js";
+import { advisorPageTag } from "./pages/advisor/index.js";
 
 const pageRegistry = {
     home: homePageTag,
-    play: playPageTag
+    play: playPageTag,
+    advisor: advisorPageTag
 };
 
 function getCurrentPageKey() {
@@ -22,11 +24,14 @@ function mountApp() {
 
     const pageKey = getCurrentPageKey();
     const pageTag = pageRegistry[pageKey];
+    const topBar = document.createElement("tc-top-bar");
+    const pageRoot = document.createElement("main");
+    const pageElement = document.createElement(pageTag);
 
-    app.innerHTML = `
-            <tc-top-bar current-page="${pageKey}"></tc-top-bar>
-            <main id="page-root"><${pageTag}></${pageTag}></main>
-    `;
+    topBar.setAttribute("current-page", pageKey);
+    pageRoot.id = "page-root";
+    pageRoot.append(pageElement);
+    app.replaceChildren(topBar, pageRoot);
 }
 
 initTheme();
